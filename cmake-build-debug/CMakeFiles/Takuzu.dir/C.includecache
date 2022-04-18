@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/arthurgatignol/CLionProjects/Takuzu/takuzu.c
+takuzu.h
+/Users/arthurgatignol/CLionProjects/Takuzu/takuzu.h
+
+/Users/arthurgatignol/CLionProjects/Takuzu/takuzu.h
+stdlib.h
+-
+stdio.h
+-
+stdbool.h
+-
+
