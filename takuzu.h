@@ -12,4 +12,9 @@
 void menu();
 int choose_grid();
 
+int* gen_grid(const int *grid_size);
+
+void check_grid(const int* *grid, const int *grid_size);
+
+
 #endif //TAKUZU_TAKUZU_H

@@ -4,6 +4,37 @@
 
 #include "takuzu.h"
 
+
+int* gen_grid(const int *grid_size)
+{
+    int n = *grid_size;
+    int* T = (int*) malloc(n * n * sizeof(int));
+
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            *(T + i*n + j) = 0;
+        }
+    }
+
+    return T;
+}
+
+void check_grid(const int* *grid, const int *grid_size)
+{
+    int n = *grid_size;
+    printf("The elements in the array are: \n");
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            printf("%d ", *(*grid + i*n + j));
+        }
+        printf("\n");
+    }
+}
+
 void menu()
 {
 
@@ -41,7 +72,11 @@ void menu()
     {
         printf("You want to generate a grid.");
 
-        choose_grid();
+        int grid_size = choose_grid();
+
+        int* T = gen_grid(&grid_size);
+
+        check_grid((const int **) &T, &grid_size);
     }
 }
 
