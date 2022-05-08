@@ -16,5 +16,7 @@ int* gen_grid(const int *grid_size);
 
 void check_grid(const int* *grid, const int *grid_size);
 
+void fill_grid(int* *solution, int* *mask, int* *grid);
+
 
 #endif //TAKUZU_TAKUZU_H
