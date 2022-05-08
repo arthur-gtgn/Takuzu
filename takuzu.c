@@ -29,9 +29,9 @@ void check_grid(const int* *grid, const int *grid_size)
     {
         for (int j=0;j<n;j++)
         {
-            printf("%d | ", *(*grid + i*n + j));
+            printf("%d ", *(*grid + i*n + j));
         }
-        printf("\n------------------------------- \n");
+        printf("\n");
     }
 }
 
