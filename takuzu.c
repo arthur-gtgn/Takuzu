@@ -4,53 +4,126 @@
 
 #include "takuzu.h"
 
-void fill_grid(int* *solution, int* *mask, int* *grid) {
-    int** g = *grid;
-    int** s = *solution;
-    int** m = *mask;
+void request(int* solution[4][4], int* game_grid[4][4]) {
+    int g=0, h=0, val=0;
+    printf("\nPlease enter the row number and the column number of the box you want to change: \n");
+
+    printf("Row number: ");
+    scanf("%d", &g);
+
+    while (g < 1 || g > 4) {
+        printf("Please enter a number between 1 and 4");
+        scanf("%d", g);
+    }
+
+    printf("\nColumn number: ");
+    scanf("%d", &h);
+
+    while (h < 1 || h > 4) {
+        printf("\nPlease enter a number between 1 and 4");
+        scanf("%d", h);
+    }
+
+
+    printf("\nWhich value do you want to enter: ");
+    scanf("%d", &val);
+
+    while (val < 0 || val > 1){
+        printf("\nPlease only enter 1 or 0.");
+        scanf("%d", &val);
+    }
+
+    check_val(game_grid, val, g, h);
+
+    game_grid[g-1][h-1] = val;
+
+    printf("\n");
+
+    display_grid(game_grid);
+
+    if (game_grid[g-1][h-1] == solution[g-1][h-1]) {
+        printf("\nYour move is correct!");
+    } else {
+        printf("Your move is valid.");
+
+
+    }
+}
+
+void check_val(int* grid[4][4], int value, int x, int y) {
+    int count0_row = 0, count1_row = 0, count0_column = 0, count1_column = 0;
+
+    for (int i=0;i<4;i++) {
+        if (grid[i][y-1] == 0) {
+            count0_row++;
+        } else if (grid[i][y-1] == 1) {
+            count1_row++;
+        }
+    }
+
+    for (int j=0; j<4; j++) {
+        if (grid[x-1][j] == 0) {
+            count0_column++;
+        } else if (grid[x-1][j] == 1) {
+            count1_column++;
+        }
+    }
+
+    int new_val = value;
+
+    if (count0_column > 2 || count0_row > 2) {
+        printf("Your move is not valid.\n");
+        while (new_val == value) {
+            printf("Please enter a new value: ");
+            scanf("%d", &new_val);
+        }
+
+    } else if (count1_row > 2 || count1_column > 2) {
+        printf("Your move is not valid.\n");
+        while (new_val == value) {
+            printf("Please enter a new value: ");
+            scanf("%d", &new_val);
+        }
+    }
+}
+
+void fill_grid(int* solution[4][4], int* mask[4][4], int* grid[4][4]) {
 
     for (int i=0;i<4;i++) {
         for (int j=0;j<4;j++) {
-            if (m[i][j] == 1) {
-                g[i][j] = s[i][j];
+            if (mask[i][j] == 1) {
+                grid[i][j] = solution[i][j];
             } else {
-                g[i][j] = -1;
+                grid[i][j] = -1;
             }
         }
     }
 }
 
-int* gen_grid(const int *grid_size)
-{
-    int n = *grid_size;
-    int* T = (int*) malloc(n * n * sizeof(int));
-
-    for (int i=0;i<n;i++)
-    {
-        for (int j=0;j<n;j++)
-        {
-            *(T + i*n + j) = 0;
-        }
-    }
-
-    return T;
-}
-
-void check_grid(const int* *grid, const int *grid_size)
-{
-    int n = *grid_size;
-    printf("The elements in the array are: \n");
-    for (int i=0;i<n;i++)
-    {
-        for (int j=0;j<n;j++)
-        {
-            printf("%d ", *(*grid + i*n + j));
+void display_grid(int* grid[4][4]) {
+    for (int i=0;i<4;i++) {
+        for (int j=0;j<4;j++) {
+            if (grid[i][j] == -1) {
+                printf(". ");
+            } else {
+                printf("%d ", grid[i][j]);
+            }
         }
         printf("\n");
     }
 }
 
-void menu()
+int check_equal_grid(int* grid1[4][4], int* grid2[4][4]) {
+    for (int i=0; i<4; i++) {
+        for (int j=0;j<4;j++) {
+            if (grid1[i][j] != grid2[i][j]) {
+                return 0;
+            }
+        }
+    }
+}
+
+_Noreturn void menu()
 {
 
     int* solution1[4][4] = {{1, 0, 0, 1},{1, 0, 1, 0},{0, 1, 1, 0},{0,1,0,1}};
@@ -79,90 +152,17 @@ void menu()
     if (mode_choice == 1)
     {
         printf("Here is the grid: \n\n");
-        // printf("You have chosen to solve a grid yourself.\n");
-
-        // choose_grid();
-
-        /*
-        for (int i=0;i<4;i++){
-            for (int j=0;j<4;j++){
-                printf("%d ", solution1[i][j]);
-            }
-            printf("\n");
-        }
-         */
 
 
-        for (int i=0;i<4;i++) {
-            for (int j=0;j<4;j++) {
-                if (mask1[i][j] == 1) {
-                    game_grid1[i][j] = solution1[i][j];
-                } else {
-                    game_grid1[i][j] = -1;
-                }
-            }
+        fill_grid(solution1,mask1,game_grid1);
+
+        display_grid(game_grid1);
+
+        while (0 == check_equal_grid(game_grid1, solution1)) {
+            request(solution1, game_grid1);
         }
 
-        for (int i=0;i<4;i++) {
-            for (int j=0;j<4;j++) {
-                if (game_grid1[i][j] == -1) {
-                    printf(". ");
-                } else {
-                    printf("%d ", game_grid1[i][j]);
-                }
-            }
-            printf("\n");
-        }
-
-        int g=0, h=0, val=0;
-        printf("\nPlease enter the row number and the column number of the box you want to change: \n");
-
-        printf("Row number: ");
-        scanf("%d", &g);
-
-        while (g < 1 || g > 4) {
-            printf("Please enter a number between 1 and 4");
-            scanf("%d", g);
-        }
-
-        printf("\nColumn number: ");
-        scanf("%d", &h);
-
-        while (h < 1 || h > 4) {
-            printf("\nPlease enter a number between 1 and 4");
-            scanf("%d", h);
-        }
-
-
-        printf("\nWhich value do you want to enter: ");
-        scanf("%d", &val);
-
-        while (val < 0 || val > 1){
-            printf("\nPlease only enter 1 or 0.");
-            scanf("%d", &val);
-        }
-
-        game_grid1[g-1][h-1] = val;
-
-        printf("\n");
-
-        for (int i=0;i<4;i++) {
-            for (int j=0;j<4;j++) {
-                if (game_grid1[i][j] == -1) {
-                    printf(". ");
-                } else {
-                    printf("%d ", game_grid1[i][j]);
-                }
-            }
-            printf("\n");
-        }
-
-        if (game_grid1[g-1][h-1] == solution1[g-1][h-1]) {
-            printf("\nYour move is correct!");
-        } else {
-            printf("\nYour move is valid");
-        }
-
+        printf("You have solved the grid!");
 
 
     }
@@ -206,4 +206,34 @@ int choose_grid() {
     }
 
     return grid_size;
+}
+
+int* gen_grid(const int *grid_size)
+{
+    int n = *grid_size;
+    int* T = (int*) malloc(n * n * sizeof(int));
+
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            *(T + i*n + j) = 0;
+        }
+    }
+
+    return T;
+}
+
+void check_grid(const int* *grid, const int *grid_size)
+{
+    int n = *grid_size;
+    printf("The elements in the array are: \n");
+    for (int i=0;i<n;i++)
+    {
+        for (int j=0;j<n;j++)
+        {
+            printf("%d ", *(*grid + i*n + j));
+        }
+        printf("\n");
+    }
 }
