@@ -16,7 +16,7 @@
 #include "takuzu.h"
 #define N 4
 
-void request(int* solution[N][N], int* game_grid[N][N]) {
+void request(int* solution[N][N], int* game_grid[N][N], int life) {
     int g=0, h=0, val=0;
     printf("\nPlease enter the row number and the column number of the box you want to change: \n");
 
@@ -57,12 +57,13 @@ void request(int* solution[N][N], int* game_grid[N][N]) {
         printf("\nYour move is correct!");
     } else {
         printf("Your move is valid.");
-
+        life++;
 
     }
 }
 
-void request8(int* solution[8][8], int* game_grid[8][8]) {
+void request8(int* solution[8][8], int* game_grid[8][8], int life) {
+    int l = 0;
     int g=0, h=0, val=0;
     printf("\nPlease enter the row number and the column number of the box you want to change: \n");
 
@@ -103,7 +104,7 @@ void request8(int* solution[8][8], int* game_grid[8][8]) {
         printf("\nYour move is correct!");
     } else {
         printf("Your move is valid.");
-
+        life++;
     }
 }
 
@@ -130,6 +131,8 @@ int check_val(int* grid[N][N], int value, int x, int y) {
     if (value==0) {
         if (count0_column >= 2 || count0_row >= 2) {
             printf("Your move is not valid.\n");
+            printf("You can't put more than two 0 in a row.\n");
+            printf("Above, below, to the left, to the right of a series of two 0's, there can only be one 1.\n");
             while (new_val == value) {
                 printf("Please enter a new value: ");
                 scanf("%d", &new_val);
@@ -138,6 +141,8 @@ int check_val(int* grid[N][N], int value, int x, int y) {
     } else {
         if (count1_row >= 2 || count1_column >= 2) {
             printf("Your move is not valid.\n");
+            printf("You can't put more than two 1 in a row.\n");
+            printf("Above, below, to the left, to the right of a series of two 0's, there can only be one 1.\n");
             while (new_val == value) {
                 printf("Please enter a new value: ");
                 scanf("%d", &new_val);
@@ -221,6 +226,7 @@ int check_equal_grid8(int* grid1[8][8], int* grid2[8][8]) {
 
 _Noreturn void menu()
 {
+    int life = 0;
 
     int* solution41[4][4] = {{1, 0, 0, 1},{1, 0, 1, 0},{0, 1, 1, 0},{0,1,0,1}};
     int* mask41[4][4] = {{1,0,0,0},{0,0,1,0},{1,0,1,1},{0,1,0,0}};
@@ -276,13 +282,13 @@ _Noreturn void menu()
             fill_grid4(solution41,mask41,game_grid1);
             display_grid4(game_grid1);
             while (0== check_equal_grid4(game_grid1, solution41)) {
-                request(solution41, game_grid1);
+                request(solution41, game_grid1, life);
             }
         } else if (grid_size == 8) {
             fill_grid8(solution82,mask82,game_grid82);
             display_grid8(game_grid82);
-            while (0== check_equal_grid8(game_grid1, solution41)) {
-                request8(solution82, game_grid82);
+            while (0== check_equal_grid8(game_grid82, solution82) || life == 3) {
+                request8(solution82, game_grid82, life);
             }
         }
 
@@ -333,7 +339,20 @@ void check_rows(int* grid[N][N]) {
     for (int i=0; i<N; i++) {
         for (int j=0; j<i;j++) {
             if (grid[i] == grid[j]) {
-                printf("It is invalid");
+                printf("It is invalid\n");
+                printf("By comparing a row already filled with a row missing 2 values, if all values match, then we can fill the row missing two values.\n");
+            }
+        }
+    }
+    printf("It is valid");
+}
+
+void check_columns(int* grid[N][N]) {
+    for (int j=0; j<N; j++) {
+        for (int i=0; i<j;i++) {
+            if (grid[j] == grid[i]) {
+                printf("It is invalid\n");
+                printf("By comparing a column already filled with a column missing 2 values, if all values match, then we can fill the column missing two values.\n");
             }
         }
     }
