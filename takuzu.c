@@ -297,7 +297,13 @@ _Noreturn void menu()
     {
         printf("You want the AI to solve a grid.");
 
-        choose_grid();
+        int grid_size = choose_grid();
+
+        if (grid_size == 4) {
+            fill_grid4(solution41,mask41,game_grid1);
+            solve_grid4(solution41, mask41, game_grid1);
+        }
+
     }
     else
     {
@@ -387,4 +393,18 @@ void check_grid(const int* *grid, const int *grid_size)
         }
         printf("\n");
     }
+}
+
+void solve_grid4(int* solution[4][4], int* mask[4][4], int* game_grid[4][4]) {
+    for (int i=0;i<4;i++) {
+        for (int j=0;j<4;j++) {
+            if (game_grid[i][j] != solution[i][j]) {
+                game_grid[i][j] = solution[i][j];
+                display_grid4(game_grid);
+            }
+            printf("\n");
+        }
+
+    }
+
 }

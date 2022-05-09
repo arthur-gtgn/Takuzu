@@ -41,4 +41,6 @@ void check_rows(int* grid[N][N]);
 
 void check_columns(int* grid[N][N]);
 
+void solve_grid4(int* solution[4][4], int* mask[4][4], int* game_grid[4][4]);
+
 #endif //TAKUZU_TAKUZU_H
