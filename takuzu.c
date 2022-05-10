@@ -231,6 +231,12 @@ _Noreturn void menu()
     int* solution41[4][4] = {{1, 0, 0, 1},{1, 0, 1, 0},{0, 1, 1, 0},{0,1,0,1}};
     int* mask41[4][4] = {{1,0,0,0},{0,0,1,0},{1,0,1,1},{0,1,0,0}};
 
+    int* sol41 = (int*) malloc(4 * 4 * sizeof(int));
+    int* mask4 = (int*) malloc(4 * 4 * sizeof(int));
+
+    sol41 = (int *) solution41;
+    mask4 = (int *) mask41;
+
     int* solution82[8][8] = {{1,0,0,1,0,1,0,1},
                             {0,0,1,1,0,0,1,1},
                             {1,1,0,0,1,1,0,0},
@@ -249,7 +255,13 @@ _Noreturn void menu()
                         {1,0,1,1,0,0,1,0},
                         {0,1,1,0,0,1,0,0}};
 
-    int* game_grid1[N][N];
+    int* sol82 = (int*) malloc(8 * 8 * sizeof(int));
+    int* mask8 = (int*) malloc(8 * 8 * sizeof(int));
+
+    sol82 = (int*) solution82;
+    mask8 = (int*) mask82;
+
+    int* game_grid41 = (int*) malloc(4 * 4 * sizeof(int));
 
     int* game_grid82[8][8];
 
@@ -279,10 +291,10 @@ _Noreturn void menu()
         int grid_size = choose_grid();
 
         if (grid_size == 4) {
-            fill_grid4(solution41,mask41,game_grid1);
-            display_grid4(game_grid1);
-            while (0== check_equal_grid4(game_grid1, solution41)) {
-                request(solution41, game_grid1, life);
+            fill_grid4(solution41,mask41,&game_grid41);
+            display_grid4(&game_grid41);
+            while (0== check_equal_grid4(game_grid41, &solution41)) {
+                request(solution41, &game_grid41, life);
             }
         } else if (grid_size == 8) {
             fill_grid8(solution82,mask82,game_grid82);
@@ -300,8 +312,8 @@ _Noreturn void menu()
         int grid_size = choose_grid();
 
         if (grid_size == 4) {
-            fill_grid4(solution41,mask41,game_grid1);
-            solve_grid4(solution41, mask41, game_grid1);
+            fill_grid4(solution41,mask41,game_grid41);
+            solve_grid4(solution41, mask41, game_grid41);
         }
 
     }

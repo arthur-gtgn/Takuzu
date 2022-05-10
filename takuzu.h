@@ -17,9 +17,9 @@ int* gen_grid(const int *grid_size);
 
 void check_grid(const int* *grid, const int *grid_size);
 
-void fill_grid4(int* solution[N][N], int* mask[N][N], int* grid[N][N]);
+void fill_grid4(int* solution[N][N], int* mask[N][N], int* *grid[4][4]);
 
-void fill_grid8(int* solution[8][8], int* mask[8][8], int* grid[8][8]);
+void fill_grid8(int* solution[8][8], int* mask[8][8], int* *grid[8][8]);
 
 void request(int* solution[N][N], int* game_grid[N][N], int life);
 

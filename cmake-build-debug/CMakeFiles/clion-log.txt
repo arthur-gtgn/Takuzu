@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" -S /Users/arthurgatignol/CLionProjects/Takuzu -B /Users/arthurgatignol/CLionProjects/Takuzu/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/arthurgatignol/CLionProjects/Takuzu -B /Users/arthurgatignol/CLionProjects/Takuzu/cmake-build-debug
 -- The C compiler identification is AppleClang 13.1.6.13160021
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
