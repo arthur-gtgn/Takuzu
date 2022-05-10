@@ -17,13 +17,11 @@ int* gen_grid(const int *grid_size);
 
 void check_grid(const int* *grid, const int *grid_size);
 
-void fill_grid4(int* solution[N][N], int* mask[N][N], int* *grid[4][4]);
+void fill_grid4(int* *solution, int* *mask, int* *grid);
 
-void fill_grid8(int* solution[8][8], int* mask[8][8], int* *grid[8][8]);
+void request(int* *solution, int* *game_grid, int life);
 
-void request(int* solution[N][N], int* game_grid[N][N], int life);
-
-void display_grid4(int* grid[N][N]);
+void display_grid4(int* *grid);
 
 void display_grid8(int* grid[8][8]);
 
@@ -41,6 +39,6 @@ void check_rows(int* grid[N][N]);
 
 void check_columns(int* grid[N][N]);
 
-void solve_grid4(int* solution[4][4], int* mask[4][4], int* game_grid[4][4]);
+void solve_grid4(int* *solution, int* *mask, int* *game_grid);
 
 #endif //TAKUZU_TAKUZU_H

@@ -16,7 +16,7 @@
 #include "takuzu.h"
 #define N 4
 
-void request(int* solution[N][N], int* game_grid[N][N], int life) {
+void request(int* *solution, int* *game_grid, int life) {
     int g=0, h=0, val=0;
     printf("\nPlease enter the row number and the column number of the box you want to change: \n");
 
@@ -152,7 +152,7 @@ int check_val(int* grid[N][N], int value, int x, int y) {
     return new_val;
 }
 
-void fill_grid4(int* solution[N][N], int* mask[N][N], int* grid[N][N]) {
+void fill_grid4(int* *solution, int* *mask, int* *grid) {
 
     for (int i=0;i<N;i++) {
         for (int j=0;j<N;j++) {
@@ -178,7 +178,7 @@ void fill_grid8(int* solution[8][8], int* mask[8][8], int* grid[8][8]) {
     }
 }
 
-void display_grid4(int* grid[N][N]) {
+void display_grid4(int* *grid) {
     for (int i=0;i<N;i++) {
         for (int j=0;j<N;j++) {
             if (grid[i][j] == -1) {
@@ -291,10 +291,10 @@ _Noreturn void menu()
         int grid_size = choose_grid();
 
         if (grid_size == 4) {
-            fill_grid4(solution41,mask41,&game_grid41);
+            fill_grid4(&sol41,&mask4,&game_grid41);
             display_grid4(&game_grid41);
-            while (0== check_equal_grid4(game_grid41, &solution41)) {
-                request(solution41, &game_grid41, life);
+            while (0== check_equal_grid4(game_grid41, &sol41)) {
+                request(&sol41, &game_grid41, life);
             }
         } else if (grid_size == 8) {
             fill_grid8(solution82,mask82,game_grid82);
@@ -407,7 +407,7 @@ void check_grid(const int* *grid, const int *grid_size)
     }
 }
 
-void solve_grid4(int* solution[4][4], int* mask[4][4], int* game_grid[4][4]) {
+void solve_grid4(int* *solution, int* *mask, int* *game_grid) {
     for (int i=0;i<4;i++) {
         for (int j=0;j<4;j++) {
             if (game_grid[i][j] != solution[i][j]) {
