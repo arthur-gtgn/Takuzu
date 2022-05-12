@@ -17,15 +17,15 @@ int* gen_grid(const int *grid_size);
 
 void check_grid(const int* *grid, const int *grid_size);
 
-void fill_grid(int* solution, int* mask, int* grid, int size);
+void fill_grid(const int* solution, const int* mask, int* grid, int size);
 
-void request(int* solution, int* game_grid, int life, int size);
+void request(const int* solution, int* game_grid, int life, int size);
 
 void display_grid(int* grid, int size);
 
-int check_val(int* grid[N][N], int value, int x, int y);
+int check_val(int* grid, int value, int x, int y, int size);
 
-int check_equal_grid(int* *grid1, int* *grid2);
+int check_equal_grid(const int* grid1, const int* grid2, int size);
 
 int check_row(int grid[N][N], int row);
 

@@ -88,16 +88,16 @@ _Noreturn void menu()
         if (grid_size == 4) {
             fill_grid(solution41,&mask41,game_grid4, grid_size);
             display_grid(game_grid4, grid_size);
-            /*
-            while (0== check_equal_grid(&game_grid4, solution41)) {
-                request(solution41, &game_grid4, life, grid_size);
+
+            while (0== check_equal_grid(game_grid4, solution41, grid_size)) {
+                request(solution41, game_grid4, life, grid_size);
             }
-             */
+
             request(solution41, game_grid4, life, grid_size);
         } else if (grid_size == 8) {
             fill_grid(solution8,&mask8,&game_grid8, grid_size);
             display_grid(&game_grid8, grid_size);
-            while (0== check_equal_grid(&game_grid8, &solution8) || life == 3) {
+            while (0== check_equal_grid(&game_grid8, &solution8, grid_size) || life == 3) {
                 request(&solution8, &game_grid8, life, grid_size);
             }
         }
@@ -123,7 +123,7 @@ _Noreturn void menu()
     }
 }
 
-void request(int* solution, int* game_grid, int life, int size) {
+void request(const int* solution, int* game_grid, int life, int size) {
     int g=0, h=0, val=0;
     printf("\nPlease enter the row number and the column number of the box you want to change: \n");
 
@@ -154,7 +154,7 @@ void request(int* solution, int* game_grid, int life, int size) {
 
     game_grid[size*(g-1)+(h-1)] = val;
 
-    game_grid[size*(g-1)+(h-1)] = check_val(game_grid, val, g-1, h-1);
+    game_grid[size*(g-1)+(h-1)] = check_val(game_grid, val, g-1, h-1, size);
 
     printf("\n");
     display_grid(game_grid, size);
@@ -196,21 +196,21 @@ int choose_grid() {
     return grid_size;
 }
 
-int check_val(int* grid[N][N], int value, int x, int y) {
+int check_val(int* grid, int value, int x, int y, int size) {
     int count0_row = 0, count1_row = 0, count0_column = 0, count1_column = 0;
 
-    for (int i=0;i<N;i++) {
-        if (grid[i][y-1] == 0) {
+    for (int i=0;i<size;i++) {
+        if (grid[size*i+(y-1)] == 0) {
             count0_row++;
-        } else if (grid[i][y-1] == 1) {
+        } else if (grid[size*i+(y-1)] == 1) {
             count1_row++;
         }
     }
 
-    for (int j=0; j<N; j++) {
-        if (grid[x-1][j] == 0) {
+    for (int j=0; j<size; j++) {
+        if (grid[size*(x-1)+j] == 0) {
             count0_column++;
-        } else if (grid[x-1][j] == 1) {
+        } else if (grid[size*(x-1)+j] == 1) {
             count1_column++;
         }
     }
@@ -237,10 +237,11 @@ int check_val(int* grid[N][N], int value, int x, int y) {
             }
         }
     }
+    printf("%d\n", new_val);
     return new_val;
 }
 
-void fill_grid(int* solution, int* mask, int* grid, int size) {
+void fill_grid(const int* solution, const int* mask, int* grid, int size) {
     for (int i=0;i<size;i++) {
         for (int j=0;j<size;j++) {
             if (mask[size*i+j] == 1) {
@@ -265,11 +266,10 @@ void display_grid(int* grid, int size) {
     }
 }
 
-int check_equal_grid(int* *grid1, int* *grid2) {
-    size_t n = sizeof(*grid1) / sizeof(*grid1[0]);
-    for (int i=0; i<n; i++) {
-        for (int j=0;j<n;j++) {
-            if (grid1[i][j] != grid2[i][j]) {
+int check_equal_grid(const int* grid1, const int* grid2, int size) {
+    for (int i=0; i<size; i++) {
+        for (int j=0;j<size;j++) {
+            if (grid1[size*i+j] != grid2[size*i+j]) {
                 return 0;
             }
         }
