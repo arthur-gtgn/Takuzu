@@ -16,14 +16,121 @@
 #include "takuzu.h"
 #define N 4
 
-void request(int* *solution, int* *game_grid, int life) {
+_Noreturn void menu()
+{
+    int life = 0;
+
+    int solution41[4][4] = {
+            {1, 0, 0, 1},
+            {1, 0, 1, 0},
+            {0, 1, 1, 0},
+            {0,1,0,1}
+    };
+
+
+    int mask41[4][4] = {
+            {1,0,0,0},
+            {0,0,1,0},
+            {1,0,1,1},
+            {0,1,0,0}
+    };
+
+    int solution8[8][8] = {{1,0,0,1,0,1,0,1},
+                             {0,0,1,1,0,0,1,1},
+                             {1,1,0,0,1,1,0,0},
+                             {1,1,0,1,0,1,0,0},
+                             {0,0,1,0,1,0,1,1},
+                             {0,0,1,1,0,1,0,1},
+                             {1,1,0,0,1,0,1,0},
+                             {0,1,1,0,1,0,1,0}};
+
+    int mask8[8][8] = {{0,1,1,0,1,0,0,1},
+                         {0,0,0,0,1,1,0,1},
+                         {0,0,1,0,0,0,0,0},
+                         {0,0,0,0,0,0,0,0},
+                         {1,1,0,0,1,1,0,0},
+                         {0,0,0,0,0,0,1,1},
+                         {1,0,1,1,0,0,1,0},
+                         {0,1,1,0,0,1,0,0}};
+
+
+
+    int* game_grid4 = (int*) malloc(16 * sizeof(int));
+    printf("%d", sizeof(*game_grid4));
+
+    int* game_grid8 = (int*) malloc(8 * 8 * sizeof(int));
+
+
+    int mode_choice=0;
+
+    printf("Welcome to the game of Takuzu\n");
+    printf("You can choose between three options: \n");
+    printf("1. Solve a grid yourself\n");
+    printf("2. Let the AI solve a Takuzu grid\n");
+    printf("3. Generate a Takuzu grid\n");
+
+    printf("Which option are you choosing?\n");
+    scanf("%d", &mode_choice);
+
+    while (mode_choice < 1 || mode_choice > 3)
+    {
+        printf("Your choice is invalid, please enter a number between 1 and 3\n");
+        scanf("%d", &mode_choice);
+    }
+
+    if (mode_choice == 1)
+    {
+
+        printf("You want to solve the grid yourself\n");
+
+        int grid_size = choose_grid();
+
+        if (grid_size == 4) {
+            fill_grid(solution41,&mask41,game_grid4, grid_size);
+            display_grid(game_grid4, grid_size);
+            /*
+            while (0== check_equal_grid(&game_grid4, solution41)) {
+                request(solution41, &game_grid4, life, grid_size);
+            }
+             */
+            request(solution41, game_grid4, life, grid_size);
+        } else if (grid_size == 8) {
+            fill_grid(solution8,&mask8,&game_grid8, grid_size);
+            display_grid(&game_grid8, grid_size);
+            while (0== check_equal_grid(&game_grid8, &solution8) || life == 3) {
+                request(&solution8, &game_grid8, life, grid_size);
+            }
+        }
+
+    }
+    else if (mode_choice == 2)
+    {
+        printf("You want the AI to solve a grid.");
+
+        int grid_size = choose_grid();
+
+        if (grid_size == 4) {
+            fill_grid(solution41,mask41,game_grid4, grid_size);
+            solve_grid4(solution41, mask41, game_grid4);
+        }
+
+    }
+    else
+    {
+        printf("You want to generate a grid.");
+
+        int grid_size = choose_grid();
+    }
+}
+
+void request(int* solution, int* game_grid, int life, int size) {
     int g=0, h=0, val=0;
     printf("\nPlease enter the row number and the column number of the box you want to change: \n");
 
     printf("Row number: ");
     scanf("%d", &g);
 
-    while (g < 1 || g > N) {
+    while (g < 1 || g > size) {
         printf("Please enter a number between 1 and N");
         scanf("%d", g);
     }
@@ -31,7 +138,7 @@ void request(int* *solution, int* *game_grid, int life) {
     printf("\nColumn number: ");
     scanf("%d", &h);
 
-    while (h < 1 || h > N) {
+    while (h < 1 || h > size) {
         printf("\nPlease enter a number between 1 and N");
         scanf("%d", h);
     }
@@ -45,15 +152,14 @@ void request(int* *solution, int* *game_grid, int life) {
         scanf("%d", &val);
     }
 
-    game_grid[g-1][h-1] = val;
+    game_grid[size*(g-1)+(h-1)] = val;
 
-    game_grid[g-1][h-1] = check_val(game_grid, val, g-1, h-1);
+    game_grid[size*(g-1)+(h-1)] = check_val(game_grid, val, g-1, h-1);
 
     printf("\n");
+    display_grid(game_grid, size);
 
-    display_grid4(game_grid);
-
-    if (game_grid[g-1][h-1] == solution[g-1][h-1]) {
+    if (game_grid[size*(g-1)*(h-1)] == solution[size*(g-1)*(h-1)]) {
         printf("\nYour move is correct!");
     } else {
         printf("Your move is valid.");
@@ -62,50 +168,32 @@ void request(int* *solution, int* *game_grid, int life) {
     }
 }
 
-void request8(int* solution[8][8], int* game_grid[8][8], int life) {
-    int l = 0;
-    int g=0, h=0, val=0;
-    printf("\nPlease enter the row number and the column number of the box you want to change: \n");
+int choose_grid() {
+    int grid_size_choice = 0;
+    int grid_size=0;
 
-    printf("Row number: ");
-    scanf("%d", &g);
+    printf("What kind of grid do you want to solve?\n");
+    printf("1. 4x4 grid\n");
+    printf("2. 8x8 grid\n");
+    printf("Please enter 1 or 2.");
 
-    while (g < 1 || g > 8) {
-        printf("Please enter a number between 1 and N");
-        scanf("%d", g);
+    scanf("%d", &grid_size_choice);
+
+    while (grid_size_choice < 1 || grid_size_choice > 2) {
+        printf("Your choice is invalid, please enter a number between 1 and 2\n");
+        scanf("%d", &grid_size_choice);
     }
 
-    printf("\nColumn number: ");
-    scanf("%d", &h);
-
-    while (h < 1 || h > 8) {
-        printf("\nPlease enter a number between 1 and N");
-        scanf("%d", h);
+    if (grid_size_choice == 1)
+    {
+        grid_size = 4;
+    }
+    else
+    {
+        grid_size = 8;
     }
 
-
-    printf("\nWhich value do you want to enter: ");
-    scanf("%d", &val);
-
-    while (val < 0 || val > 1){
-        printf("\nPlease only enter 1 or 0.");
-        scanf("%d", &val);
-    }
-
-    game_grid[g-1][h-1] = val;
-
-    game_grid[g-1][h-1] = check_val(game_grid, val, g-1, h-1);
-
-    printf("\n");
-
-    display_grid8(game_grid);
-
-    if (game_grid[g-1][h-1] == solution[g-1][h-1]) {
-        printf("\nYour move is correct!");
-    } else {
-        printf("Your move is valid.");
-        life++;
-    }
+    return grid_size;
 }
 
 int check_val(int* grid[N][N], int value, int x, int y) {
@@ -152,205 +240,40 @@ int check_val(int* grid[N][N], int value, int x, int y) {
     return new_val;
 }
 
-void fill_grid4(int* *solution, int* *mask, int* *grid) {
-
-    for (int i=0;i<N;i++) {
-        for (int j=0;j<N;j++) {
-            if (mask[i][j] == 1) {
-                grid[i][j] = solution[i][j];
+void fill_grid(int* solution, int* mask, int* grid, int size) {
+    for (int i=0;i<size;i++) {
+        for (int j=0;j<size;j++) {
+            if (mask[size*i+j] == 1) {
+                grid[size*i+j] = solution[size*i+j];
             } else {
-                grid[i][j] = -1;
+                grid[size*i+j] = -1;
             }
         }
     }
 }
 
-void fill_grid8(int* solution[8][8], int* mask[8][8], int* grid[8][8]) {
-
-    for (int i=0;i<8;i++) {
-        for (int j=0;j<8;j++) {
-            if (mask[i][j] == 1) {
-                grid[i][j] = solution[i][j];
-            } else {
-                grid[i][j] = -1;
-            }
-        }
-    }
-}
-
-void display_grid4(int* *grid) {
-    for (int i=0;i<N;i++) {
-        for (int j=0;j<N;j++) {
-            if (grid[i][j] == -1) {
+void display_grid(int* grid, int size) {
+    for (int i=0;i<size;i++) {
+        for (int j=0;j<size;j++) {
+            if (grid[size*i+j] == -1) {
                 printf(". ");
             } else {
-                printf("%d ", grid[i][j]);
+                printf("%d ", grid[size*i+j]);
             }
         }
         printf("\n");
     }
 }
 
-void display_grid8(int* grid[8][8]) {
-    for (int i=0;i<8;i++) {
-        for (int j=0;j<8;j++) {
-            if (grid[i][j] == -1) {
-                printf(". ");
-            } else {
-                printf("%d ", grid[i][j]);
-            }
-        }
-        printf("\n");
-    }
-}
-
-int check_equal_grid4(int* grid1[N][N], int* grid2[N][N]) {
-    for (int i=0; i<N; i++) {
-        for (int j=0;j<N;j++) {
+int check_equal_grid(int* *grid1, int* *grid2) {
+    size_t n = sizeof(*grid1) / sizeof(*grid1[0]);
+    for (int i=0; i<n; i++) {
+        for (int j=0;j<n;j++) {
             if (grid1[i][j] != grid2[i][j]) {
                 return 0;
             }
         }
     }
-}
-
-int check_equal_grid8(int* grid1[8][8], int* grid2[8][8]) {
-    for (int i=0; i<8; i++) {
-        for (int j=0;j<8;j++) {
-            if (grid1[i][j] != grid2[i][j]) {
-                return 0;
-            }
-        }
-    }
-}
-
-_Noreturn void menu()
-{
-    int life = 0;
-
-    int* solution41[4][4] = {{1, 0, 0, 1},{1, 0, 1, 0},{0, 1, 1, 0},{0,1,0,1}};
-    int* mask41[4][4] = {{1,0,0,0},{0,0,1,0},{1,0,1,1},{0,1,0,0}};
-
-    int* sol41 = (int*) malloc(4 * 4 * sizeof(int));
-    int* mask4 = (int*) malloc(4 * 4 * sizeof(int));
-
-    sol41 = (int *) solution41;
-    mask4 = (int *) mask41;
-
-    int* solution82[8][8] = {{1,0,0,1,0,1,0,1},
-                            {0,0,1,1,0,0,1,1},
-                            {1,1,0,0,1,1,0,0},
-                            {1,1,0,1,0,1,0,0},
-                            {0,0,1,0,1,0,1,1},
-                            {0,0,1,1,0,1,0,1},
-                            {1,1,0,0,1,0,1,0},
-                            {0,1,1,0,1,0,1,0}};
-
-    int* mask82[8][8] = {{0,1,1,0,1,0,0,1},
-                        {0,0,0,0,1,1,0,1},
-                        {0,0,1,0,0,0,0,0},
-                        {0,0,0,0,0,0,0,0},
-                        {1,1,0,0,1,1,0,0},
-                        {0,0,0,0,0,0,1,1},
-                        {1,0,1,1,0,0,1,0},
-                        {0,1,1,0,0,1,0,0}};
-
-    int* sol82 = (int*) malloc(8 * 8 * sizeof(int));
-    int* mask8 = (int*) malloc(8 * 8 * sizeof(int));
-
-    sol82 = (int*) solution82;
-    mask8 = (int*) mask82;
-
-    int* game_grid41 = (int*) malloc(4 * 4 * sizeof(int));
-
-    int* game_grid82[8][8];
-
-
-    int mode_choice=0;
-
-    printf("Welcome to the game of Takuzu\n");
-    printf("You can choose between three options: \n");
-    printf("1. Solve a grid yourself\n");
-    printf("2. Let the AI solve a Takuzu grid\n");
-    printf("3. Generate a Takuzu grid\n");
-
-    printf("Which option are you choosing?\n");
-    scanf("%d", &mode_choice);
-
-    while (mode_choice < 1 || mode_choice > 3)
-    {
-        printf("Your choice is invalid, please enter a number between 1 and 3\n");
-        scanf("%d", &mode_choice);
-    }
-
-    if (mode_choice == 1)
-    {
-
-        printf("You want to solve the grid yourself\n");
-
-        int grid_size = choose_grid();
-
-        if (grid_size == 4) {
-            fill_grid4(&sol41,&mask4,&game_grid41);
-            display_grid4(&game_grid41);
-            while (0== check_equal_grid4(game_grid41, &sol41)) {
-                request(&sol41, &game_grid41, life);
-            }
-        } else if (grid_size == 8) {
-            fill_grid8(solution82,mask82,game_grid82);
-            display_grid8(game_grid82);
-            while (0== check_equal_grid8(game_grid82, solution82) || life == 3) {
-                request8(solution82, game_grid82, life);
-            }
-        }
-
-    }
-    else if (mode_choice == 2)
-    {
-        printf("You want the AI to solve a grid.");
-
-        int grid_size = choose_grid();
-
-        if (grid_size == 4) {
-            fill_grid4(solution41,mask41,game_grid41);
-            solve_grid4(solution41, mask41, game_grid41);
-        }
-
-    }
-    else
-    {
-        printf("You want to generate a grid.");
-
-        int grid_size = choose_grid();
-    }
-}
-
-int choose_grid() {
-    int grid_size_choice = 0;
-    int grid_size=0;
-
-    printf("What kind of grid do you want to solve?\n");
-    printf("1. 4x4 grid\n");
-    printf("2. 8x8 grid\n");
-    printf("Please enter 1 or 2.");
-
-    scanf("%d", &grid_size_choice);
-
-    while (grid_size_choice < 1 || grid_size_choice > 2) {
-        printf("Your choice is invalid, please enter a number between 1 and 2\n");
-        scanf("%d", &grid_size_choice);
-    }
-
-    if (grid_size_choice == 1)
-    {
-        grid_size = 4;
-    }
-    else
-    {
-        grid_size = 8;
-    }
-
-    return grid_size;
 }
 
 void check_rows(int* grid[N][N]) {
@@ -358,7 +281,8 @@ void check_rows(int* grid[N][N]) {
         for (int j=0; j<i;j++) {
             if (grid[i] == grid[j]) {
                 printf("It is invalid\n");
-                printf("By comparing a row already filled with a row missing 2 values, if all values match, then we can fill the row missing two values.\n");
+                printf("By comparing a row already filled with a row missing 2 values,"
+                       " if all values match, then we can fill the row missing two values.\n");
             }
         }
     }
@@ -370,41 +294,12 @@ void check_columns(int* grid[N][N]) {
         for (int i=0; i<j;i++) {
             if (grid[j] == grid[i]) {
                 printf("It is invalid\n");
-                printf("By comparing a column already filled with a column missing 2 values, if all values match, then we can fill the column missing two values.\n");
+                printf("By comparing a column already filled with a column missing 2 values, if all values match, "
+                       "then we can fill the column missing two values.\n");
             }
         }
     }
     printf("It is valid");
-}
-
-int* gen_grid(const int *grid_size)
-{
-    int n = *grid_size;
-    int* T = (int*) malloc(n * n * sizeof(int));
-
-    for (int i=0;i<n;i++)
-    {
-        for (int j=0;j<n;j++)
-        {
-            *(T + i*n + j) = 0;
-        }
-    }
-
-    return T;
-}
-
-void check_grid(const int* *grid, const int *grid_size)
-{
-    int n = *grid_size;
-    printf("The elements in the array are: \n");
-    for (int i=0;i<n;i++)
-    {
-        for (int j=0;j<n;j++)
-        {
-            printf("%d ", *(*grid + i*n + j));
-        }
-        printf("\n");
-    }
 }
 
 void solve_grid4(int* *solution, int* *mask, int* *game_grid) {
@@ -412,7 +307,8 @@ void solve_grid4(int* *solution, int* *mask, int* *game_grid) {
         for (int j=0;j<4;j++) {
             if (game_grid[i][j] != solution[i][j]) {
                 game_grid[i][j] = solution[i][j];
-                display_grid4(game_grid);
+                int x =4;
+                display_grid(game_grid, x);
             }
             printf("\n");
         }
