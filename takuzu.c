@@ -56,10 +56,8 @@ _Noreturn void menu()
 
 
     int* game_grid4 = (int*) malloc(16 * sizeof(int));
-    printf("%d", sizeof(*game_grid4));
 
     int* game_grid8 = (int*) malloc(8 * 8 * sizeof(int));
-
 
     int mode_choice=0;
 
@@ -160,6 +158,7 @@ void request(const int* solution, int* game_grid, int life, int size) {
     display_grid(game_grid, size);
 
     if (game_grid[size*(g-1)*(h-1)] == solution[size*(g-1)*(h-1)]) {
+        printf("x: %d ; y: %d", g, h);
         printf("\nYour move is correct!");
     } else {
         printf("Your move is valid.");
