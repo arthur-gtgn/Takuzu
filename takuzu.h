@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-#define N 4
+
 
 _Noreturn void menu(int life);
 int choose_grid();

@@ -14,9 +14,8 @@
  */
 
 #include "takuzu.h"
-#define N 4
 
-_Noreturn void menu(int life)
+void menu(int life)
 {
 
 
@@ -63,7 +62,7 @@ _Noreturn void menu(int life)
         }
     }
 
-    printf("%d", sizeof(*game_grid4));
+    printf("%lu", sizeof(*game_grid4));
 
     int* game_grid8 = (int*) malloc(8 * 8 * sizeof(int));
 
@@ -101,7 +100,7 @@ _Noreturn void menu(int life)
                     }
                 }
                 printf("Here is the mask right now: \n");
-                display_grid(mask41, 4);
+                display_grid(*mask41, 4);
 
                 int boxes=0;
                 printf("How many boxes do you want to change?");
@@ -136,20 +135,20 @@ _Noreturn void menu(int life)
                     mask41[x-1][y-1] = 1;
                 }
 
-                fill_grid(solution41, &mask41, game_grid4, grid_size);
+                fill_grid(*solution41, *mask41, game_grid4, grid_size);
                 display_grid(game_grid4, 4);
             } else if (mask_choice == 2) {
-                fill_grid(solution41,&mask41,game_grid4, grid_size);
+                fill_grid(*solution41,*mask41,game_grid4, grid_size);
                 display_grid(*mask41, grid_size);
                 printf("\n");
                 display_grid(game_grid4, grid_size);
             } else if (mask_choice == 3) {
-                fill_grid(solution41,&mask41,game_grid4, grid_size);
+                fill_grid(*solution41,*mask41,game_grid4, grid_size);
                 display_grid(game_grid4, grid_size);
             }
 
-            while ( 0 == check_equal_grid(game_grid4, solution41, grid_size) && life!=0) {
-                life = request(solution41, game_grid4, life, grid_size);
+            while ( 0 == check_equal_grid(game_grid4, *solution41, grid_size) && life!=0) {
+                life = request(*solution41, game_grid4, life, grid_size);
             }
             if (life == 0) {
                 printf("You ran out of lives.");
@@ -164,7 +163,7 @@ _Noreturn void menu(int life)
                     }
                 }
                 printf("Here is the mask right now: \n");
-                display_grid(mask8, grid_size);
+                display_grid(*mask8, grid_size);
 
                 int boxes=0;
                 printf("How many boxes do you want to change?");
@@ -199,19 +198,19 @@ _Noreturn void menu(int life)
                     mask8[x-1][y-1] = 1;
                 }
 
-                fill_grid(solution8, &mask8, game_grid8, grid_size);
+                fill_grid(*solution8, *mask8, game_grid8, grid_size);
                 display_grid(game_grid8, grid_size);
             } else if (mask_choice == 2) {
-                fill_grid(solution8,&mask8,game_grid8, grid_size);
+                fill_grid(*solution8,*mask8,game_grid8, grid_size);
                 display_grid(*mask8, grid_size);
                 printf("\n");
                 display_grid(game_grid8, grid_size);
             } else if (mask_choice == 3) {
-                fill_grid(solution8,&mask8,game_grid8, grid_size);
+                fill_grid(*solution8,*mask8,game_grid8, grid_size);
                 display_grid(game_grid8, grid_size);
             }
-            while (0== check_equal_grid(&game_grid8, &solution8, grid_size) && life!=0) {
-                life = request(solution8, game_grid8, life, grid_size);
+            while (0== check_equal_grid(game_grid8, *solution8, grid_size) && life!=0) {
+                life = request(*solution8, game_grid8, life, grid_size);
             }
             if (life==0) {
                 printf("You ran out of lives.");
@@ -224,11 +223,6 @@ _Noreturn void menu(int life)
         printf("You want the AI to solve a grid.");
 
         int grid_size = choose_grid();
-
-        if (grid_size == 4) {
-            fill_grid(solution41,mask41,game_grid4, grid_size);
-            solve_grid4(solution41, mask41, game_grid4);
-        }
 
     }
     else
